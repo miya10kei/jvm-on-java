@@ -11,16 +11,19 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ConstantUtf8 extends ConstantPool {
 
-    private final int length;
-    private final short[] bytes;
+  private final int length;
+  private final byte[] bytes;
 
-    public ConstantUtf8(short tag, DataInput raw) throws IOException {
-        super(tag);
-        this.length = raw.readUnsignedShort();
-        this.bytes = new short[this.length];
-        for (int i = 0; i < this.length; i++) {
-            bytes[i] = (short) raw.readUnsignedByte();
-        }
+  public String getStringOfBytes() {
+    return new String(this.bytes);
+  }
+
+  public ConstantUtf8(short tag, DataInput raw) throws IOException {
+    super(tag);
+    this.length = raw.readUnsignedShort();
+    this.bytes = new byte[this.length];
+    for (int i = 0; i < this.length; i++) {
+      bytes[i] = raw.readByte();
     }
-
+  }
 }

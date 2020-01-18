@@ -11,10 +11,10 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ConstantClass extends ConstantPool {
 
-    private final int nameIndex;
+  private final int nameIndex;
 
-    public ConstantClass(short tag, DataInput raw) throws IOException {
-        super(tag);
-        this.nameIndex = raw.readInt();
-    }
+  public ConstantClass(short tag, DataInput data) throws IOException {
+    super(tag);
+    this.nameIndex = data.readShort();
+  }
 }

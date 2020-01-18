@@ -6,6 +6,5 @@ import lombok.experimental.NonFinal;
 @NonFinal
 @Value
 public class ConstantPool {
-
-    private final short tag;
+  private final short tag;
 }

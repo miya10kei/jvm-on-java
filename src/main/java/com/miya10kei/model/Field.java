@@ -1,4 +1,4 @@
-package com.miya10kei.model.constant_pool;
+package com.miya10kei.model;
 
 import java.io.DataInput;
 import java.io.IOException;
@@ -17,6 +17,6 @@ public class Field {
     this.nameIndex = raw.readUnsignedShort();
     this.descriptorIndex = raw.readUnsignedShort();
     this.attributesCount = raw.readUnsignedShort();
-    // todo
+    // TODO implements attributes
   }
 }
