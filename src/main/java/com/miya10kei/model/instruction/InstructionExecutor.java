@@ -2,14 +2,13 @@ package com.miya10kei.model.instruction;
 
 import com.miya10kei.model.attribute.Code;
 import com.miya10kei.model.constant_pool.ConstantPool;
-import java.nio.ByteBuffer;
 import java.util.Stack;
 
 public class InstructionExecutor {
-  public static void exec(Code codeAttr, ConstantPool[] constantPools)
+  public static void exec(final Code codeAttr, final ConstantPool[] constantPools)
       throws ReflectiveOperationException {
     var stack = new Stack<>();
-    var code = ByteBuffer.wrap(codeAttr.getCode());
+    var code = codeAttr.getByteBufferOfCode();
     while (code.hasRemaining()) {
       var op = Byte.toUnsignedInt(code.get());
       switch (op) {

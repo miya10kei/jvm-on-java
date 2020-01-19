@@ -1,8 +1,12 @@
 package com.miya10kei.model.attribute;
 
 import com.miya10kei.model.constant_pool.ConstantPool;
-import java.io.DataInput;
+import com.miya10kei.typs.U1;
+import com.miya10kei.typs.U2;
+import com.miya10kei.typs.U4;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -12,50 +16,61 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class Code extends Attribute {
-  private final int maxStack;
-  private final int maxLocals;
-  private final long codeLength;
-  private final byte[] code;
-  private final int exceptionTableLength;
+  private final U2 maxStack;
+  private final U2 maxLocals;
+  private final U4 codeLength;
+  private final U1[] code;
+  private final U2 exceptionTableLength;
   private final Exception[] exceptionTable;
-  private final int attributesCount;
+  private final U2 attributesCount;
   private final Attribute[] attributes;
 
   public Code(
-      int attributeNameIndex, long attributeLength, DataInput data, ConstantPool[] constantPools)
+      final U2 attributeNameIndex,
+      final U4 attributeLength,
+      final InputStream data,
+      final ConstantPool[] constantPools)
       throws IOException {
     super(attributeNameIndex, attributeLength);
-    this.maxStack = data.readUnsignedShort();
-    this.maxLocals = data.readUnsignedShort();
-    this.codeLength = data.readInt();
-    this.code = new byte[(int) this.codeLength]; // todo long -> intはなおす
-    for (int i = 0; i < this.codeLength; i++) {
-      code[i] =  data.readByte();
+    this.maxStack = new U2(data.readNBytes(2));
+    this.maxLocals = new U2(data.readNBytes(2));
+    this.codeLength = new U4(data.readNBytes(4));
+    this.code = new U1[(int) this.codeLength.getUnsignedLong()]; // TODO Should fix
+    for (int i = 0; i < (int) this.codeLength.getUnsignedLong(); i++) {
+      code[i] = new U1(data.readNBytes(1));
     }
-    this.exceptionTableLength = data.readUnsignedShort();
-    this.exceptionTable = new Exception[this.exceptionTableLength];
-    for (int i = 0; i < this.exceptionTableLength; i++) {
+    this.exceptionTableLength = new U2(data.readNBytes(2));
+    this.exceptionTable = new Exception[this.exceptionTableLength.getUnsignedInt()];
+    for (int i = 0; i < this.exceptionTableLength.getUnsignedInt(); i++) {
       this.exceptionTable[i] = new Exception(data);
     }
-    this.attributesCount = data.readUnsignedShort();
-    this.attributes = new Attribute[this.attributesCount];
-    for (int i = 0; i < this.attributesCount; i++) {
+    this.attributesCount = new U2(data.readNBytes(2));
+    this.attributes = new Attribute[this.attributesCount.getUnsignedInt()];
+    for (int i = 0; i < this.attributesCount.getUnsignedInt(); i++) {
       this.attributes[i] = AttributeFactory.getInstance(data, constantPools);
     }
   }
 
+  public ByteBuffer getByteBufferOfCode() {
+    var bytes = new byte[this.code.length];
+    for (int i = 0; i < this.code.length; i++) {
+      bytes[i] = this.code[i].getRaw();
+    }
+    return ByteBuffer.wrap(bytes);
+  }
+
   @Value
   class Exception {
-    private final int startPc;
-    private final int endPc;
-    private final int handlerPc;
-    private final int catchType;
+    private final U2 startPc;
+    private final U2 endPc;
+    private final U2 handlerPc;
+    private final U2 catchType;
 
-    public Exception(DataInput data) throws IOException {
-      this.startPc = data.readUnsignedShort();
-      this.endPc = data.readUnsignedShort();
-      this.handlerPc = data.readUnsignedShort();
-      this.catchType = data.readUnsignedShort();
+    public Exception(final InputStream data) throws IOException {
+      this.startPc = new U2(data.readNBytes(2));
+      this.endPc = new U2(data.readNBytes(2));
+      this.handlerPc = new U2(data.readNBytes(2));
+      this.catchType = new U2(data.readNBytes(2));
     }
   }
 }

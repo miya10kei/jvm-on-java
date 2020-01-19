@@ -1,44 +1,45 @@
 package com.miya10kei.model.constant_pool;
 
-import java.io.DataInput;
+import com.miya10kei.typs.U1;
 import java.io.IOException;
+import java.io.InputStream;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConstantPoolFactory {
 
-  public static ConstantPool getInstance(DataInput raw) throws IOException {
-    var tag = (short) raw.readUnsignedByte();
-    switch (tag) {
+  public static ConstantPool getInstance(final InputStream data) throws IOException {
+    var tag = new U1(data.readNBytes(1));
+    switch (tag.getUnsignedInt()) {
       case 1:
-        return new ConstantUtf8(tag, raw);
+        return new ConstantUtf8(tag, data);
       case 3:
-        return new ConstantInteger(tag, raw);
+        return new ConstantInteger(tag, data);
       case 4:
-        return new ConstantFloat(tag, raw);
+        return new ConstantFloat(tag, data);
       case 5:
-        return new ConstantLong(tag, raw);
+        return new ConstantLong(tag, data);
       case 6:
-        return new ConstantDouble(tag, raw);
+        return new ConstantDouble(tag, data);
       case 7:
-        return new ConstantClass(tag, raw);
+        return new ConstantClass(tag, data);
       case 8:
-        return new ConstantString(tag, raw);
+        return new ConstantString(tag, data);
       case 9:
-        return new ConstantFieldRef(tag, raw);
+        return new ConstantFieldRef(tag, data);
       case 10:
-        return new ConstantMethodRef(tag, raw);
+        return new ConstantMethodRef(tag, data);
       case 11:
-        return new ConstantInterfaceMethodRef(tag, raw);
+        return new ConstantInterfaceMethodRef(tag, data);
       case 12:
-        return new ConstantNameAndType(tag, raw);
+        return new ConstantNameAndType(tag, data);
       case 15:
-        return new ConstantMethodHandle(tag, raw);
+        return new ConstantMethodHandle(tag, data);
       case 16:
-        return new ConstantMethodType(tag, raw);
+        return new ConstantMethodType(tag, data);
       case 18:
-        return new ConstantInvokeDynamic(tag, raw);
+        return new ConstantInvokeDynamic(tag, data);
       default:
         throw new RuntimeException("Invalid tag: " + tag);
     }

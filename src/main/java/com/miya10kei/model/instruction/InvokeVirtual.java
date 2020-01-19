@@ -11,19 +11,23 @@ import java.util.Stack;
 import java.util.regex.Pattern;
 
 public class InvokeVirtual {
-  public static void exec(ByteBuffer data, ConstantPool[] constantPools, Stack<Object> stack)
+  public static void exec(
+      final ByteBuffer data, final ConstantPool[] constantPools, final Stack<Object> stack)
       throws ReflectiveOperationException {
     var index = Short.toUnsignedInt(data.getShort());
     var cp = (ConstantMethodRef) constantPools[index - 1];
 
     // method name
-    var nameAndType = (ConstantNameAndType) constantPools[cp.getNameAndTypeIndex() - 1];
+    var nameAndType =
+        (ConstantNameAndType) constantPools[cp.getNameAndTypeIndex().getUnsignedInt() - 1];
     var methodName =
-        ((ConstantUtf8) constantPools[nameAndType.getNameIndex() - 1]).getStringOfBytes();
+        ((ConstantUtf8) constantPools[nameAndType.getNameIndex().getUnsignedInt() - 1])
+            .getStringOfBytes();
 
     // argument
     var descriptor =
-        ((ConstantUtf8) constantPools[nameAndType.getDescriptorIndex() - 1]).getStringOfBytes();
+        ((ConstantUtf8) constantPools[nameAndType.getDescriptorIndex().getUnsignedInt() - 1])
+            .getStringOfBytes();
     var argTypes = parseArgumentType(descriptor);
     var argValues = new Object[argTypes.length];
     for (int i = 0; i < argTypes.length; i++) {

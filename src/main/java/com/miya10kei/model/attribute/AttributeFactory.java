@@ -2,23 +2,21 @@ package com.miya10kei.model.attribute;
 
 import com.miya10kei.model.constant_pool.ConstantPool;
 import com.miya10kei.model.constant_pool.ConstantUtf8;
-import java.io.DataInput;
+import com.miya10kei.typs.U2;
+import com.miya10kei.typs.U4;
 import java.io.IOException;
+import java.io.InputStream;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AttributeFactory {
-  public static Attribute getInstance(DataInput data, ConstantPool[] constantPools)
+  public static Attribute getInstance(final InputStream data, final ConstantPool[] constantPools)
       throws IOException {
-    var attributeNameIndex = data.readUnsignedShort();
-    var attributeLength = data.readInt();
-    var cp = constantPools[attributeNameIndex - 1];
-    if (!(cp instanceof ConstantUtf8)) {
-      throw new RuntimeException(
-          "Invalid constant pool structure: " + cp.getClass().getSimpleName());
-    }
-    var name = ((ConstantUtf8) cp).getStringOfBytes();
+    var attributeNameIndex = new U2(data.readNBytes(2));
+    var attributeLength = new U4(data.readNBytes(4));
+    var cp = (ConstantUtf8) constantPools[attributeNameIndex.getUnsignedInt() - 1];
+    var name = cp.getStringOfBytes();
     // Todo implements remaining attributes
     switch (name) {
       case "Code":

@@ -8,9 +8,12 @@ import java.util.Stack;
 
 public class Ldc {
 
-  public static void exec(ByteBuffer data, ConstantPool[] constantPools, Stack<Object> stack) {
+  public static void exec(
+      final ByteBuffer data, final ConstantPool[] constantPools, final Stack<Object> stack) {
     var index = Byte.toUnsignedInt(data.get());
     var cp = (ConstantString) constantPools[index - 1];
-    stack.push((((ConstantUtf8) constantPools[cp.getStringIndex() - 1]).getStringOfBytes()));
+    stack.push(
+        (((ConstantUtf8) constantPools[cp.getStringIndex().getUnsignedInt() - 1])
+            .getStringOfBytes()));
   }
 }

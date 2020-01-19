@@ -1,7 +1,9 @@
 package com.miya10kei.model.attribute;
 
-import java.io.DataInput;
+import com.miya10kei.typs.U2;
+import com.miya10kei.typs.U4;
 import java.io.IOException;
+import java.io.InputStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,11 +12,11 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class SourceFile extends Attribute {
-  private final int sourceFileIndex;
+  private final U2 sourceFileIndex;
 
-  public SourceFile(int attributeNameIndex, long attributeLength, DataInput data)
+  public SourceFile(final U2 attributeNameIndex, final U4 attributeLength, final InputStream data)
       throws IOException {
     super(attributeNameIndex, attributeLength);
-    this.sourceFileIndex = data.readUnsignedShort();
+    this.sourceFileIndex = new U2(data.readNBytes(2));
   }
 }

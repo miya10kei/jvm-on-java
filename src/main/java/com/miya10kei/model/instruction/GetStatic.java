@@ -10,17 +10,22 @@ import java.nio.ByteBuffer;
 import java.util.Stack;
 
 public class GetStatic {
-  public static void exec(ByteBuffer data, ConstantPool[] constantPools, Stack<Object> stack)
+  public static void exec(
+      final ByteBuffer data, final ConstantPool[] constantPools, final Stack<Object> stack)
       throws ReflectiveOperationException {
     var index = Short.toUnsignedInt(data.getShort());
     var cp = (ConstantFieldRef) constantPools[index - 1];
 
-    var classCp = (ConstantClass) constantPools[cp.getClassIndex() - 1];
-    var className = ((ConstantUtf8) constantPools[classCp.getNameIndex() - 1]).getStringOfBytes();
+    var classCp = (ConstantClass) constantPools[cp.getClassIndex().getUnsignedInt() - 1];
+    var className =
+        ((ConstantUtf8) constantPools[classCp.getNameIndex().getUnsignedInt() - 1])
+            .getStringOfBytes();
 
-    var nameAndTypeCp = (ConstantNameAndType) constantPools[cp.getNameAndTypeIndex() - 1];
+    var nameAndTypeCp =
+        (ConstantNameAndType) constantPools[cp.getNameAndTypeIndex().getUnsignedInt() - 1];
     var fieldName =
-        ((ConstantUtf8) constantPools[nameAndTypeCp.getNameIndex() - 1]).getStringOfBytes();
+        ((ConstantUtf8) constantPools[nameAndTypeCp.getNameIndex().getUnsignedInt() - 1])
+            .getStringOfBytes();
 
     stack.push(Class.forName(NameConverter.toFQCN(className)).getField(fieldName).get(null));
   }

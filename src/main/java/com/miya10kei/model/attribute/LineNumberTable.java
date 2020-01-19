@@ -1,7 +1,9 @@
 package com.miya10kei.model.attribute;
 
-import java.io.DataInput;
+import com.miya10kei.typs.U2;
+import com.miya10kei.typs.U4;
 import java.io.IOException;
+import java.io.InputStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -11,27 +13,28 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class LineNumberTable extends Attribute {
-  private final int lineNumberTableLength;
+  private final U2 lineNumberTableLength;
   private final LineNumber[] lineNumberTable;
 
-  public LineNumberTable(int attributeNameIndex, long attributeLength, DataInput data)
+  public LineNumberTable(
+      final U2 attributeNameIndex, final U4 attributeLength, final InputStream data)
       throws IOException {
     super(attributeNameIndex, attributeLength);
-    this.lineNumberTableLength = data.readUnsignedShort();
-    this.lineNumberTable = new LineNumber[this.lineNumberTableLength];
-    for (int i = 0; i < this.lineNumberTableLength; i++) {
+    this.lineNumberTableLength = new U2(data.readNBytes(2));
+    this.lineNumberTable = new LineNumber[this.lineNumberTableLength.getUnsignedInt()];
+    for (int i = 0; i < this.lineNumberTableLength.getUnsignedInt(); i++) {
       this.lineNumberTable[i] = new LineNumber(data);
     }
   }
 
   @Value
   class LineNumber {
-    private final int startPc;
-    private final int lineNumber;
+    private final U2 startPc;
+    private final U2 lineNumber;
 
-    public LineNumber(DataInput data) throws IOException {
-      this.startPc = data.readUnsignedShort();
-      this.lineNumber = data.readUnsignedShort();
+    public LineNumber(final InputStream data) throws IOException {
+      this.startPc = new U2(data.readNBytes(2));
+      this.lineNumber = new U2(data.readNBytes(2));
     }
   }
 }

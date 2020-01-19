@@ -4,9 +4,8 @@ import com.miya10kei.model.ClassFile;
 import com.miya10kei.model.Method;
 import com.miya10kei.model.attribute.Attribute;
 import com.miya10kei.model.attribute.Code;
-import com.miya10kei.model.constant_pool.ConstantPool;
 import com.miya10kei.model.instruction.InstructionExecutor;
-import java.io.DataInputStream;
+import java.io.BufferedInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +18,10 @@ public class Main {
       System.out.println("Please set Java class file path to 1st argument only.");
       System.exit(1);
     }
-    try (var data = new DataInputStream(Files.newInputStream(Paths.get(args[0])))) {
+    try (var data = new BufferedInputStream(Files.newInputStream(Paths.get(args[0])))) {
       var classFile = new ClassFile(data);
       exec(classFile);
+      System.exit(0);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
     }
@@ -35,7 +35,6 @@ public class Main {
   }
 
   private static Method findMainMethod(ClassFile classFile) {
-    final ConstantPool[] cps = classFile.getConstantPools();
     for (Method method : classFile.getMethods()) {
       if ("main".equals(method.getName())) {
         return method;

@@ -1,7 +1,9 @@
 package com.miya10kei.model.constant_pool;
 
-import java.io.DataInput;
+import com.miya10kei.typs.U1;
+import com.miya10kei.typs.U2;
 import java.io.IOException;
+import java.io.InputStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,14 +12,12 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class ConstantMethodHandle extends ConstantPool {
+  private final U1 referenceKind;
+  private final U2 referenceIndex;
 
-  private final short referenceKind;
-
-  private final int referenceIndex;
-
-  public ConstantMethodHandle(short tag, DataInput raw) throws IOException {
+  public ConstantMethodHandle(final U1 tag, final InputStream data) throws IOException {
     super(tag);
-    this.referenceKind = (short) raw.readUnsignedByte();
-    this.referenceIndex = raw.readUnsignedShort();
+    this.referenceKind = new U1(data.readNBytes(1));
+    this.referenceIndex = new U2(data.readNBytes(2));
   }
 }

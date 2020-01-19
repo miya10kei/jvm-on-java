@@ -1,7 +1,9 @@
 package com.miya10kei.model.constant_pool;
 
-import java.io.DataInput;
+import com.miya10kei.typs.U1;
+import com.miya10kei.typs.U4;
 import java.io.IOException;
+import java.io.InputStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,11 +12,10 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class ConstantInteger extends ConstantPool {
+  private final U4 bytes;
 
-    private final long bytes;
-
-    public ConstantInteger(short tag, DataInput raw) throws IOException {
-        super(tag);
-        this.bytes = Integer.toUnsignedLong(raw.readInt());
-    }
+  public ConstantInteger(final U1 tag, final InputStream data) throws IOException {
+    super(tag);
+    this.bytes = new U4(data.readNBytes(4));
+  }
 }
