@@ -1,6 +1,6 @@
 package com.miya10kei.model.constant_pool;
 
-import com.miya10kei.typs.U1;
+import com.miya10kei.type.U1;
 import java.io.IOException;
 import java.io.InputStream;
 import lombok.AccessLevel;

@@ -4,7 +4,7 @@ import com.miya10kei.model.attribute.Attribute;
 import com.miya10kei.model.attribute.AttributeFactory;
 import com.miya10kei.model.constant_pool.ConstantPool;
 import com.miya10kei.model.constant_pool.ConstantUtf8;
-import com.miya10kei.typs.U2;
+import com.miya10kei.type.U2;
 import java.io.IOException;
 import java.io.InputStream;
 import lombok.Value;

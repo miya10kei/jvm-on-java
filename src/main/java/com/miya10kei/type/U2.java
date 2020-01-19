@@ -1,4 +1,4 @@
-package com.miya10kei.typs;
+package com.miya10kei.type;
 
 import java.util.Arrays;
 import lombok.AccessLevel;
@@ -6,12 +6,12 @@ import lombok.Getter;
 import lombok.Value;
 
 @Value
-public class U4 {
+public class U2 {
   @Getter(AccessLevel.NONE)
   private final byte[] data;
 
-  public U4(final byte[] data) {
-    if (data == null || data.length != 4) {
+  public U2(final byte[] data) {
+    if (data == null || data.length != 2) {
       throw new RuntimeException("Invalid data" + Arrays.toString(data));
     }
     this.data = data;
@@ -21,11 +21,15 @@ public class U4 {
     return this.data;
   }
 
+  public int getUnsignedInt() {
+    return (data[0] << 8) + (data[1]);
+  }
+
   public long getUnsignedLong() {
-    return Integer.toUnsignedLong(((data[0] << 24) + (data[1] << 16) + (data[2] << 8) + (data[3])));
+    return Integer.toUnsignedLong(getUnsignedInt());
   }
 
   private String getHexString() {
-    return Long.toHexString(getUnsignedLong());
+    return Integer.toHexString(getUnsignedInt());
   }
 }
