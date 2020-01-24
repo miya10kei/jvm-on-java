@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
-public class InvokeVirtual {
-  public static void exec(
+class InvokeVirtual {
+  static void exec(
       final ByteBuffer data, final ConstantPool[] constantPools, final Stack<Object> stack)
       throws ReflectiveOperationException {
     var index = Short.toUnsignedInt(data.getShort());
@@ -40,15 +40,26 @@ public class InvokeVirtual {
   }
 
   // language = regex
-  private static final Pattern PATTERN = Pattern.compile("\\(L([/\\w]+);\\)V");
+  private static final Pattern PATTERN = Pattern.compile("\\(L?([/\\w]+);?\\)V");
 
   private static Class<?>[] parseArgumentType(String descriptor) throws ClassNotFoundException {
     var matcher = PATTERN.matcher(descriptor);
     var args = new ArrayList<Class<?>>();
     while (matcher.find()) {
-      args.add(Class.forName(NameConverter.toFQCN(matcher.group(1))));
+      var typeName = matcher.group(1);
+      args.add(resolveClassNameToFQCN(typeName));
     }
+
     var ret = new Class[args.size()];
     return args.toArray(ret);
+  }
+
+  private static Class<?> resolveClassNameToFQCN(String name) throws ClassNotFoundException {
+    switch (name) {
+      case "I":
+        return Integer.TYPE;
+      default:
+        return Class.forName(NameConverter.toFQCN(name));
+    }
   }
 }

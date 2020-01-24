@@ -6,8 +6,7 @@ import com.miya10kei.model.constant_pool.ConstantUtf8;
 import java.nio.ByteBuffer;
 import java.util.Stack;
 
-public class Ldc {
-
+class Ldc {
   public static void exec(
       final ByteBuffer data, final ConstantPool[] constantPools, final Stack<Object> stack) {
     var index = Byte.toUnsignedInt(data.get());

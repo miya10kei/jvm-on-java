@@ -12,6 +12,30 @@ public class InstructionExecutor {
     while (code.hasRemaining()) {
       var op = Byte.toUnsignedInt(code.get());
       switch (op) {
+        case 0x2: // iconst_m1
+          Iconst.exec(-1, stack);
+          break;
+        case 0x3: // iconst_0
+          Iconst.exec(0, stack);
+          break;
+        case 0x4: // iconst_1
+          Iconst.exec(1, stack);
+          break;
+        case 0x5: // iconst_2
+          Iconst.exec(2, stack);
+          break;
+        case 0x6: // iconst_3
+          Iconst.exec(3, stack);
+          break;
+        case 0x7: // iconst_4
+          Iconst.exec(4, stack);
+          break;
+        case 0x8: // iconst_5
+          Iconst.exec(5, stack);
+          break;
+        case 0x10: // bipush
+          BiPush.exec(code, stack);
+          break;
         case 0xb2: // getstatic
           GetStatic.exec(code, constantPools, stack);
           break;

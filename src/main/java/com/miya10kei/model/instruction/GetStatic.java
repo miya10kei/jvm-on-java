@@ -9,8 +9,8 @@ import com.miya10kei.util.NameConverter;
 import java.nio.ByteBuffer;
 import java.util.Stack;
 
-public class GetStatic {
-  public static void exec(
+class GetStatic {
+  static void exec(
       final ByteBuffer data, final ConstantPool[] constantPools, final Stack<Object> stack)
       throws ReflectiveOperationException {
     var index = Short.toUnsignedInt(data.getShort());
